@@ -114,7 +114,7 @@ impl<ST: CertificateSignatureRecoverable> Decodable for PeerDiscoveryMessage<ST>
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, RlpDecodable, RlpEncodable)]
+#[derive(Debug, Clone, PartialEq, RlpDecodable, RlpEncodable)]
 #[rlp(trailing)]
 pub struct Ping<ST: CertificateSignatureRecoverable> {
     pub id: u32,
@@ -161,10 +161,13 @@ mod test {
         let ping = Ping {
             id: 257,
             local_name_record: MonadNameRecord::<SignatureType>::new(
-                NameRecord {
-                    address: SocketAddrV4::from_str("127.0.0.1:8000").unwrap(),
-                    seq: 2,
-                },
+                NameRecord::new(
+                    *SocketAddrV4::from_str("127.0.0.1:8000").unwrap().ip(),
+                    8000,
+                    8000,
+                    0,
+                    2,
+                ),
                 &key,
             ),
         };
